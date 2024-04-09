@@ -1,4 +1,7 @@
 import argparse
+from loguru import logger
+from pathlib import Path
+
 
 def main(args):
 
@@ -145,7 +148,6 @@ def main(args):
         if s < len(chain_alphabet):
             pdb_dict_list.append(my_dict)
             c+=1
-            
             
     with open(save_path, 'w') as f:
         for entry in pdb_dict_list:

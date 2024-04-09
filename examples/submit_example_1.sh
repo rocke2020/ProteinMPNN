@@ -5,11 +5,11 @@
 #SBATCH -c 2
 #SBATCH --output=example_1.out
 
-source activate mlfold
+conda activate RFdiffusion
 
 folder_with_pdbs="../inputs/PDB_monomers/pdbs/"
 
-output_dir="../outputs/example_1_outputs"
+output_dir="../outputs2/example_1_outputs"
 if [ ! -d $output_dir ]
 then
     mkdir -p $output_dir
