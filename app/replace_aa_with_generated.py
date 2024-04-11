@@ -23,7 +23,7 @@ ic.configureOutput(includeContext=True, argToStringFunction=str)
 ic.lineWrapWidth = 120
 score_pat = re.compile(r"\sscore=(\d+\.\d+)")
 global_score_pat = re.compile(r"\sglobal_score=(\d+\.\d+)")
-
+designed_chains_pat = re.compile(r"designed_chains=\['(.*)'\]")
 alpha_1 = list("ARNDCQEGHILKMFPSTWYV-")
 alpha_3 = [
     "ALA",
@@ -61,6 +61,7 @@ class GeneratedSeq(object):
     seq: str
     score: float
     global_score: float
+    designed_chain: str = "A"
 
 
 def main(args):
@@ -74,10 +75,15 @@ def main(args):
             logger.warning(f"{generated_seqs_file} does not exist")
             continue
         generated_seqs = []
+        designed_chain = 'A'
         with open(generated_seqs_file, encoding="utf-8") as f:
             is_generated_seq = False
-            for line in f:
-                if line.startswith(">T="):
+            for i, line in enumerate(f):
+                if i == 0:
+                    if got:= designed_chains_pat.search(line):
+                        designed_chain = got.group(1)
+                        # print(f"{designed_chain = }")
+                elif line.startswith(">T="):
                     is_generated_seq = True
                     if got := score_pat.search(line):
                         score = float(got.group(1))

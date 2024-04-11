@@ -36,4 +36,3 @@ if __name__ == "__main__":
 
 # Output looks like this:
 # {"5TTA": [["A"], ["B"]], "3LIS": [["A"], ["B"]]}
-
