@@ -75,14 +75,18 @@ def main(args):
             logger.warning(f"{generated_seqs_file} does not exist")
             continue
         generated_seqs = []
-        designed_chain = 'A'
         with open(generated_seqs_file, encoding="utf-8") as f:
             is_generated_seq = False
             for i, line in enumerate(f):
                 if i == 0:
                     if got:= designed_chains_pat.search(line):
                         designed_chain = got.group(1)
-                        # print(f"{designed_chain = }")
+                        if args.verbose:
+                            logger.info(f"{designed_chain = }")
+                    else:
+                        raise ValueError(
+                            f"No designed_chains found in the first line: {line}"
+                        )
                 elif line.startswith(">T="):
                     is_generated_seq = True
                     if got := score_pat.search(line):
@@ -98,7 +102,7 @@ def main(args):
                     continue
                 if is_generated_seq:
                     generated_seqs.append(
-                        GeneratedSeq(line.strip(), score, global_score)
+                        GeneratedSeq(line.strip(), score, global_score, designed_chain)
                     )
                     is_generated_seq = False
         if not generated_seqs:
@@ -112,9 +116,14 @@ def main(args):
         for index, generated_seq in enumerate(generated_seqs):
             new_lines = []
             for line in lines:
-                aa_ind = line.split()[5]
-                aa = generated_seq.seq[int(aa_ind) - 1]
-                _line = line.replace("GLY", aa_1_3[aa])
+                items = line.split()
+                chain = items[4]
+                if chain == designed_chain:
+                    aa_ind = items[5]
+                    aa = generated_seq.seq[int(aa_ind) - 1]
+                    _line = line.replace("GLY", aa_1_3[aa])
+                else:
+                    _line = line
                 new_lines.append(_line)
             new_pdb_file = (
                 new_pdb_dir
@@ -127,6 +136,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--seed", default=2, type=int)
+    parser.add_argument("--verbose", default=0, type=int)
     parser.add_argument(
         "--input_path", type=str, help="Path to a folder with pdb files"
     )
