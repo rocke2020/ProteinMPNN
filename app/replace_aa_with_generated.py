@@ -1,26 +1,17 @@
 import argparse
-import json
-import math
-import os
+import logging
 import random
 import re
-import shutil
-import sys
-import time
-from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 
-from icecream import ic
-from loguru import logger
-from tqdm import tqdm
+logger = logging.getLogger()
+logging.basicConfig(
+    level=logging.INFO,
+    datefmt="%y-%m-%d %H:%M",
+    format="%(asctime)s %(filename)s %(lineno)d: %(message)s",
+)
 
-sys.path.append(os.path.abspath("."))
-
-
-ic.configureOutput(includeContext=True, argToStringFunction=str)
-ic.lineWrapWidth = 120
 score_pat = re.compile(r"\sscore=(\d+\.\d+)")
 global_score_pat = re.compile(r"\sglobal_score=(\d+\.\d+)")
 designed_chains_pat = re.compile(r"designed_chains=\['(.*)'\]")

@@ -1,5 +1,4 @@
 import argparse
-from loguru import logger
 from pathlib import Path
 
 
@@ -110,8 +109,9 @@ def main(args):
     init_alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G','H', 'I', 'J','K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T','U', 'V','W','X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g','h', 'i', 'j','k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't','u', 'v','w','x', 'y', 'z']
     extra_alphabet = [str(item) for item in list(np.arange(300))]
     chain_alphabet = init_alphabet + extra_alphabet
-    
-    biounit_names = glob.glob(folder_with_pdbs_path+'*.pdb')
+    biounit_names = list(glob.glob(folder_with_pdbs_path+'*.pdb'))
+    if not biounit_names:
+       raise ValueError(f"No pdb files found in {folder_with_pdbs_path}")
     for biounit in biounit_names:
         my_dict = {}
         s = 0
