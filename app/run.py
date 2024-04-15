@@ -25,21 +25,26 @@ def main(args):
     path_for_parsed_chains = output_root / "parsed_pdbs.jsonl"
     args.input_path = args.folder_with_pdbs
     args.output_path = path_for_parsed_chains
+    logger.info("parse_multiple_chains")
     parse_multiple_chains(args)
 
     path_for_assigned_chains = output_root / "assigned_pdbs.jsonl"
     args.input_path = path_for_parsed_chains
     args.output_path = path_for_assigned_chains
+    logger.info("assign_fixed_chains")
     assign_fixed_chains(args)
 
     args.jsonl_path = path_for_parsed_chains
     args.chain_id_jsonl = path_for_assigned_chains
     args.out_folder = args.output_root
+    logger.info("protein_mpnn_run")
     protein_mpnn_run(args)
 
     args.input_path = args.folder_with_pdbs
     args.output_path = args.output_root
+    logger.info("replace_aa_with_generated")
     replace_aa_with_generated(args)
+    logger.info("end")
 
 
 if __name__ == "__main__":
@@ -237,4 +242,3 @@ if __name__ == "__main__":
     _args = parser.parse_args()
     random.seed(_args.seed)
     main(_args)
-    logger.info("end")
